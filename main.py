@@ -82,7 +82,7 @@ def detect_single(image):
             landmarks[0] = landmark_stable
 
     # draw
-    image_show = draw_face(padded, bboxes_decoded, landmarks, scores, confidence=True)
+    #image_show = draw_face(padded, bboxes_decoded, landmarks, scores, confidence=True)
     for i, mesh_landmark_inverse in enumerate(mesh_landmarks_inverse):
         image_show = draw_mesh(image_show, mesh_landmark_inverse, contour=True)
     # for i, (r_vec, t_vec) in enumerate(zip(r_vecs, t_vecs)):
