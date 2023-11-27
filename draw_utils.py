@@ -38,7 +38,7 @@ def draw_mesh(image, landmarks, offsets=(0, 0), contour=False):
     landmarks = landmarks.reshape(-1, 3)
     landmarks[:, 0] += offsets[0]
     landmarks[:, 1] += offsets[1]
-    for landmark in landmarks.astype(int):
+    for landmark in landmarks[0, 13, 14, 17, 37, 39, 40, 61, 78, 80, 81, 82, 84, 87, 88, 91, 95, 146, 178, 181, 185, 191, 267, 269, 270, 291, 308, 310, 311, 312, 314, 317, 318, 321, 324, 375, 402, 405, 409, 415].astype(int):
         cv2.circle(image_ret, (landmark[0], landmark[1]), 1, color=[255, 0, 0])
 
     if contour:
