@@ -1,7 +1,7 @@
 import pathlib
 import sys
 import time
-
+import csv
 from draw_utils import *
 from facemesh import *
 from kalman import *
@@ -83,32 +83,60 @@ def detect_single(image):
 
     # draw
     image_show = draw_face(padded, bboxes_decoded, landmarks, scores, confidence=True)
+    lip_coords = []
     for i, mesh_landmark_inverse in enumerate(mesh_landmarks_inverse):
         print(mesh_landmark_inverse.shape)
         print(i)
+ 
+        lip_coords.append(mesh_landmark_inverse[[0, 13, 14, 17, 37, 39, 40, 61, 78, 80, 81, 82, 84, 87, 88, 91, 95, 146, 178, 181, 185, 191, 267, 269, 270, 291, 308, 310, 311, 312, 314, 317, 318, 321, 324, 375, 402, 405, 409, 415], :])
+        
+
+
         image_show = draw_mesh(image_show, mesh_landmark_inverse, contour=True)
     # for i, (r_vec, t_vec) in enumerate(zip(r_vecs, t_vecs)):
     #     image_show = draw_pose(image_show, r_vec, t_vec, face_pose_decoder.camera_matrix, face_pose_decoder.dist_coeffs)
 
     # remove pad
     image_show = image_show[padded_size[0]:target_dim - padded_size[1], padded_size[2]:target_dim - padded_size[3]]
-    return image_show
+    return image_show, lip_coords
 
-
+max_rows = 2000
+rows_written = 0
 # endless loop
+target_fps = 30  
 while True:
-    start = time.time()
+    s = time.time()
     ret, image = cap.read()
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     # detect single
-    image_show = detect_single(image)
+    image_show, lip_coords = detect_single(image)
 
-    # put fps
-    image_show = put_fps(image_show, 1 / (time.time() - start))
     result = cv2.cvtColor(image_show, cv2.COLOR_RGB2BGR)
+
+    start_time = time.time()
+
+
+    e = time.time()
+    elapsed_time = e - s
+    delay_time = max(0, 1 / target_fps - elapsed_time)
+
+    time.sleep(delay_time)
+
+    fps = 1 / (e - s)
+    cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
+
+
 
     cv2.imshow('demo', result)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+    if rows_written < max_rows:
+        with open('output.csv', 'a', newline='') as csvfile:
+            csv_writer = csv.writer(csvfile)
+
+            # Write the list as a row in the CSV file
+            csv_writer.writerow(lip_coords)
+        rows_written += 1
