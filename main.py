@@ -46,11 +46,14 @@ def detect_single(image):
                    (target_dim - h + 1) // 2,
                    (target_dim - w) // 2,
                    (target_dim - w + 1) // 2]
+    # padding needed for the top, bottom, left, and right sides of the image to make it square. 
     padded = cv2.copyMakeBorder(image.copy(),
                                 *padded_size,
                                 cv2.BORDER_CONSTANT,
                                 value=[0, 0, 0])
-    padded = cv2.flip(padded, 3)
+    # used to pad the image with zeros (black color) based on the calculated padding sizes.
+    padded = cv2.flip(padded, 3) 
+    # 3 argument in cv2.flip indicates horizontal flipping. This operation is performed to augment the data, providing a mirrored version of the image.
 
     # face detection
     bboxes_decoded, landmarks, scores = face_detector.inference(padded)
