@@ -122,8 +122,8 @@ while True:
     delay_time = max(0, 1 / target_fps - elapsed_time)
     print(delay_time)
     time.sleep(delay_time)
-
-    fps = 1 / (e - s)
+    e2 = time.time()
+    fps = 1 / (e2 - s)
     cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
 
 
