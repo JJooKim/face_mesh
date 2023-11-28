@@ -85,8 +85,8 @@ def detect_single(image):
     image_show = draw_face(padded, bboxes_decoded, landmarks, scores, confidence=True)
     lip_coords = []
     for i, mesh_landmark_inverse in enumerate(mesh_landmarks_inverse):
-        print(mesh_landmark_inverse.shape)
-        print(i)
+        # print(mesh_landmark_inverse.shape)
+        # print(i)
  
         lip_coords.append(np.array(mesh_landmark_inverse[[0, 13, 14, 17, 37, 39, 40, 61, 78, 80, 81, 82, 84, 87, 88, 91, 95, 146, 178, 181, 185, 191, 267, 269, 270, 291, 308, 310, 311, 312, 314, 317, 318, 321, 324, 375, 402, 405, 409, 415], :]))
         
@@ -120,7 +120,7 @@ while True:
     e = time.time()
     elapsed_time = e - s
     delay_time = max(0, 1 / target_fps - elapsed_time)
-
+    print(delay_time)
     time.sleep(delay_time)
 
     fps = 1 / (e - s)
