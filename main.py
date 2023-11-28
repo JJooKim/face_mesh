@@ -137,6 +137,6 @@ while True:
         with open('output.csv', 'a', newline='') as csvfile:
             csv_writer = csv.writer(csvfile)
             # Write the list as a row in the CSV file
-
+            for lip_coord in lip_coords:
                 csv_writer.writerow(lip_coord)
         rows_written += 1
