@@ -5,7 +5,7 @@ import csv
 from draw_utils import *
 from facemesh import *
 from kalman import *
-
+import numpy as np
 ENABLE_EDGETPU = False
 
 MODEL_PATH = pathlib.Path("./models/")
@@ -88,9 +88,9 @@ def detect_single(image):
         print(mesh_landmark_inverse.shape)
         print(i)
  
-        lip_coords.append(mesh_landmark_inverse[[0, 13, 14, 17, 37, 39, 40, 61, 78, 80, 81, 82, 84, 87, 88, 91, 95, 146, 178, 181, 185, 191, 267, 269, 270, 291, 308, 310, 311, 312, 314, 317, 318, 321, 324, 375, 402, 405, 409, 415], :])
+        lip_coords.append(np.array(mesh_landmark_inverse[[0, 13, 14, 17, 37, 39, 40, 61, 78, 80, 81, 82, 84, 87, 88, 91, 95, 146, 178, 181, 185, 191, 267, 269, 270, 291, 308, 310, 311, 312, 314, 317, 318, 321, 324, 375, 402, 405, 409, 415], :]))
         
-
+        # check if its a numpy array
 
         image_show = draw_mesh(image_show, mesh_landmark_inverse, contour=True)
     # for i, (r_vec, t_vec) in enumerate(zip(r_vecs, t_vecs)):
@@ -103,7 +103,7 @@ def detect_single(image):
 max_rows = 2000
 rows_written = 0
 # endless loop
-target_fps = 30  
+target_fps = 12  
 while True:
     s = time.time()
     ret, image = cap.read()
@@ -134,9 +134,10 @@ while True:
         break
 
     if rows_written < max_rows:
-        with open('output.csv', 'a', newline='') as csvfile:
-            csv_writer = csv.writer(csvfile)
-
-            # Write the list as a row in the CSV file
-            csv_writer.writerow(lip_coords)
+        # with open('output.csv', 'a', newline='') as csvfile:
+        #     csv_writer = csv.writer(csvfile)
+        #     # Write the list as a row in the CSV file
+        for lip_coord in lip_coords:
+            np.savetxt('output.csv', lip_coord, delimiter=',')
+                # csv_writer.writerow(lip_coord)
         rows_written += 1
