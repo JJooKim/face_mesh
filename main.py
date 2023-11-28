@@ -134,7 +134,7 @@ while True:
         break
 
     if rows_written < max_rows:
-        with open('output.csv', 'a', newline='') as csvfile:
+        with open('output3.csv', 'a', newline='') as csvfile:
             csv_writer = csv.writer(csvfile)
             # Write the list as a row in the CSV file
             for lip_coord in lip_coords:
