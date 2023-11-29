@@ -6,7 +6,7 @@ from draw_utils import *
 from facemesh import *
 from kalman import *
 import numpy as np
-ENABLE_EDGETPU = False
+ENABLE_EDGETPU = True
 
 MODEL_PATH = pathlib.Path("./models/")
 if ENABLE_EDGETPU:
@@ -17,7 +17,7 @@ else:
     MESH_MODEL = "face_landmark.tflite"
 
 # turn on camera
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(-1)
 cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
 ret, init_image = cap.read()
 if not ret:
