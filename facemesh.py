@@ -18,7 +18,7 @@ EDGETPU_SHARED_LIB = {
 class BaseInferencer:
 
     def __init__(self, model_path, edgetpu=True):
-        experimental_delegates = [tf.lite.experimental.load_delegate('./libedgetpu.so.1')] if edgetpu else None
+        experimental_delegates = [tflite.experimental.load_delegate('./libedgetpu.so.1')] if edgetpu else None
         print("pathed")
         self.interpreter = tflite.Interpreter(
             model_path=model_path,
