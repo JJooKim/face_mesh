@@ -24,6 +24,7 @@ class BaseInferencer:
             model_path=model_path,
             experimental_delegates=
             experimental_delegates)
+        print("pated7")
         self.interpreter.allocate_tensors()
         print("pathed2")
         self.input_idx = self.interpreter.get_input_details()[0]['index']
