@@ -25,8 +25,11 @@ class BaseInferencer:
             experimental_delegates=
             experimental_delegates)
         self.interpreter.allocate_tensors()
+         print("pathed2")
         self.input_idx = self.interpreter.get_input_details()[0]['index']
+         print("pathed3")
         self.input_shape = self.interpreter.get_input_details()[0]['shape'][1:3]
+         print("pathed4")
 
     def inference(self, src):
         raise NotImplementedError("inference not implemented!")
