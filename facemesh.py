@@ -9,9 +9,9 @@ from postprocessing import nms_oneclass
 
 # EdgeTPU shared lib name
 EDGETPU_SHARED_LIB = {
-    'Linux': 'libedgetpu.so.1',
-    'Darwin': 'libedgetpu.1.dylib',
-    'Windows': 'edgetpu.dll'
+    'Linux': './libedgetpu.so.1',
+    'Darwin': './libedgetpu.1.dylib',
+    'Windows': './edgetpu.dll'
 }[platform.system()]
 
 
