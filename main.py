@@ -33,7 +33,7 @@ else:
 
 
 print("debug-2")
-predict_interpreter = tpu.make_interpreter(str(MODEL_PATH / PRED_MODEL))
+predict_interpreter = tpu.make_interpreter(str(MODEL_PATH / PRED_MODEL), device="usb")
 print("debug-1")
 predict_interpreter.allocate_tensors()
 
