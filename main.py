@@ -161,7 +161,7 @@ while True:
     print("clasees len", len(classes))
     scores = []
     for c in classes:
-        #print('%.5f' %c.score)
+        print('%.5f' %c.score)
         scores.append(c.score)
     
     if c[0] > c[1]:
