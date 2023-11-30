@@ -119,7 +119,7 @@ def detect_single(image):
 # rows_written = 0
 pred_frames = np.zeros((19, 120))
 recent_frame = np.zeros((1,120))
-target_fps = 15  
+target_fps = 20  
 prediction = ""
 
 
