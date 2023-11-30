@@ -43,18 +43,8 @@ input_details = predict_interpreter.get_input_details()
 output_details = predict_interpreter.get_output_details()
 input_shape = input_details[0]['shape']
 
-# # Introduce scalar stabilizers for pose.
-# pose_stabilizers = [Stabilizer(
-#     initial_state=[0, 0, 0, 0],
-#     input_dim=2,
-#     cov_process=0.2,
-#     cov_measure=2) for _ in range(6)]
 
-
-
-
-
-# detect single frame
+# Process Single frame
 def detect_single(image):
 
     h, w, _ = image.shape
@@ -70,7 +60,7 @@ def detect_single(image):
                                 value=[0, 0, 0])
     padded = cv2.flip(padded, 3) 
 
-    # face detection
+    # Face detection
     bboxes_decoded, landmarks, scores = face_detector.inference(padded)
 
     mesh_landmarks_inverse = []
@@ -82,21 +72,9 @@ def detect_single(image):
         mesh_landmark_inverse = face_aligner.inverse(mesh_landmark, M)
         mesh_landmarks_inverse.append(mesh_landmark_inverse)
 
-        # # pose detection
-        # r_vec, t_vec = face_pose_decoder.solve(landmark)
-        # r_vecs.append(r_vec)
-        # t_vecs.append(t_vec)
+ 
 
-        # # tracking
-        # if i == 0:
-        #     landmark_stable = []
-        #     for mark, stb in zip(landmark.reshape(-1, 2), pose_stabilizers):
-        #         stb.update(mark)
-        #         landmark_stable.append(stb.get_results())
-        #     landmark_stable = np.array(landmark_stable).flatten()
-        #     landmarks[0] = landmark_stable
-
-    # draw
+    # Draw
     image_show = draw_face(padded, bboxes_decoded, landmarks, scores, confidence=True)
     lip_coords = []
     for i, mesh_landmark_inverse in enumerate(mesh_landmarks_inverse):
@@ -150,10 +128,6 @@ while True:
     else:
         prediction='NOT SPEAKING'
     
-
-    print(output_data)
-
-
     # 고정된 fps를 위한 delay 세팅
     end_time = time.time() # 끝 시간
     elapsed_time = end_time - start_time
@@ -162,8 +136,7 @@ while True:
     end_time2 = time.time()
     fps = 1 / (end_time2 - start_time) # 해당 루프에서의 fps
 
-    # 화면 TextDisplay 코드
-    
+    # 화면 TextDisplay 코드    
     cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
     cv2.putText(result, 'Prediction:%s %.5f'%(prediction, output_data[0][0]), (30,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,0,255), thickness = 1)
     cv2.imshow('demo', result)

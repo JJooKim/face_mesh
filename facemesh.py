@@ -7,18 +7,18 @@ import tflite_runtime.interpreter as tflite
 from pycoral.utils import edgetpu as tpu
 from postprocessing import nms_oneclass
 
-# EdgeTPU shared lib name
-EDGETPU_SHARED_LIB = {
-    'Linux': './libedgetpu.so.1',
-    'Darwin': './libedgetpu.1.dylib',
-    'Windows': './edgetpu.dll'
-}[platform.system()]
+# # EdgeTPU shared lib name
+# EDGETPU_SHARED_LIB = {
+#     'Linux': './libedgetpu.so.1',
+#     'Darwin': './libedgetpu.1.dylib',
+#     'Windows': './edgetpu.dll'
+# }[platform.system()]
 
 
 class BaseInferencer:
 
     def __init__(self, model_path, edgetpu=True):
-        experimental_delegates = [tf.lite.experimental.load_delegate('libedgetpu.so.1')] if edgetpu else None
+        #experimental_delegates = [tf.lite.experimental.load_delegate('libedgetpu.so.1')] if edgetpu else None
 
         # self.interpreter = tflite.Interpreter(
         #     model_path=model_path,
