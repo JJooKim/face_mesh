@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 import tflite_runtime.interpreter as tflite
+from pycoral.utils import edgetpu as tpu
 from postprocessing import nms_oneclass
 
 # EdgeTPU shared lib name
@@ -19,11 +20,12 @@ class BaseInferencer:
     def __init__(self, model_path, edgetpu=True):
         experimental_delegates = [tf.lite.experimental.load_delegate('libedgetpu.so.1')] if edgetpu else None
 
-        self.interpreter = tflite.Interpreter(
-            model_path=model_path,
-            experimental_delegates=
-            experimental_delegates)
-
+        # self.interpreter = tflite.Interpreter(
+        #     model_path=model_path,
+        #     experimental_delegates=
+        #     experimental_delegates)
+        #
+        self.interpreter = tpu.make_interpreter(model_path, device="usb")
         self.interpreter.allocate_tensors()
 
         self.input_idx = self.interpreter.get_input_details()[0]['index']
