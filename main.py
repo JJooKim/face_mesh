@@ -15,7 +15,7 @@ from pycoral.adapters import classify
 
 
 
-
+import tensorflow as tf
 
 
 ENABLE_EDGETPU = True
@@ -33,9 +33,10 @@ else:
 
 
 print("debug-2")
-predict_interpreter = tpu.make_interpreter(str(MODEL_PATH / PRED_MODEL), device="usb")
+predict_interpreter = tf.lite.Interpreter(str(MODEL_PATH / PRED_MODEL))
 print("debug-1")
 predict_interpreter.allocate_tensors()
+
 
 
 
