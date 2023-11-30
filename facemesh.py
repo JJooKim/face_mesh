@@ -7,24 +7,11 @@ import tflite_runtime.interpreter as tflite
 from pycoral.utils import edgetpu as tpu
 from postprocessing import nms_oneclass
 
-# # EdgeTPU shared lib name
-# EDGETPU_SHARED_LIB = {
-#     'Linux': './libedgetpu.so.1',
-#     'Darwin': './libedgetpu.1.dylib',
-#     'Windows': './edgetpu.dll'
-# }[platform.system()]
-
 
 class BaseInferencer:
 
     def __init__(self, model_path, edgetpu=True):
-        #experimental_delegates = [tf.lite.experimental.load_delegate('libedgetpu.so.1')] if edgetpu else None
 
-        # self.interpreter = tflite.Interpreter(
-        #     model_path=model_path,
-        #     experimental_delegates=
-        #     experimental_delegates)
-        #
         self.interpreter = tpu.make_interpreter(model_path, device="usb")
         self.interpreter.allocate_tensors()
 
@@ -53,7 +40,6 @@ class FaceDetector(BaseInferencer):
 
     def inference(self, image):
 
-        # todo: input type check
         # convert to float32
         image_ = cv2.resize(image, tuple(self.input_shape)).astype(np.float32)
         image_ = (image_ - 128.0) / 128.0
@@ -73,7 +59,7 @@ class FaceDetector(BaseInferencer):
         if len(bboxes_decoded) == 0:
             return np.array([]), np.array([]), np.array([])
 
-        keep_mask = nms_oneclass(bboxes_decoded, scores)  # np.ones(pred_bbox.shape[0]).astype(bool)
+        keep_mask = nms_oneclass(bboxes_decoded, scores)  
         bboxes_decoded = bboxes_decoded[keep_mask]
         landmarks = landmarks[keep_mask]
         scores = scores[keep_mask]
