@@ -40,7 +40,7 @@ predict_interpreter.allocate_tensors()
 
 input_details = predict_interpreter.get_input_details()
 output_details = predict_interpreter.get_output_details()
-
+input_shape = input_details[0]['shape']
 print("debug0")
 
 # turn on camera
@@ -156,7 +156,8 @@ while True:
     #print("debug2")        
     ### pytorch inference needed
     #common.set_input(predict_interpreter, pred_frames)
-    predict_interpreter.set_tensor(input_details[0]['index'], pred_frames)
+    input_data = np.array(pred_frames, dtype=np.float32)
+    predict_interpreter.set_tensor(input_details[0]['index'], input_data)
     predict_interpreter.invoke()
     #print("debug3")
     # classes = classify.get_classes(predict_interpreter, top_k=1)
