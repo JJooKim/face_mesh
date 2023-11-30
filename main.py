@@ -156,6 +156,7 @@ while True:
     #print("debug2")        
     ### pytorch inference needed
     #common.set_input(predict_interpreter, pred_frames)
+    predict_interpreter.set_tensor(input_details[0]['index'], pred_frames)
     predict_interpreter.invoke()
     #print("debug3")
     # classes = classify.get_classes(predict_interpreter, top_k=1)
