@@ -139,21 +139,21 @@ while True:
     result = cv2.cvtColor(image_show, cv2.COLOR_RGB2BGR)
 
     # 최근 20개 Frame을 활용한 현재 Frame의 발화 여부 예측
-    current_frame = lip_coords[0].reshape(1,120)
-    new_pred_frame = np.abs(current_frame - recent_frame)
-    pred_frames = np.vstack((pred_frames[1:], new_pred_frame))
-    recent_frame = current_frame 
-    input_data = np.array(pred_frames, dtype=np.float64)
-    predict_interpreter.set_tensor(input_details[0]['index'], np.expand_dims(input_data, axis=0))
-    predict_interpreter.invoke()
-    output_data = predict_interpreter.get_tensor(output_details[0]['index'])
-    if output_data[0][0] > 0.5:
-        prediction = 'SPEAKING'
-    else:
-        prediction='NOT SPEAKING'
+    # current_frame = lip_coords[0].reshape(1,120)
+    # new_pred_frame = np.abs(current_frame - recent_frame)
+    # pred_frames = np.vstack((pred_frames[1:], new_pred_frame))
+    # recent_frame = current_frame 
+    # input_data = np.array(pred_frames, dtype=np.float64)
+    # predict_interpreter.set_tensor(input_details[0]['index'], np.expand_dims(input_data, axis=0))
+    # predict_interpreter.invoke()
+    # output_data = predict_interpreter.get_tensor(output_details[0]['index'])
+    # if output_data[0][0] > 0.5:
+    #     prediction = 'SPEAKING'
+    # else:
+    #     prediction='NOT SPEAKING'
     
 
-    print(output_data)
+    # print(output_data)
 
 
     # 고정된 fps를 위한 delay 세팅
@@ -166,7 +166,7 @@ while True:
 
     # 화면 Display 코드
     cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
-    cv2.putText(result, 'Prediction:%s %.5f'%(prediction, output_data[0][0]), (30,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,0,255), thickness = 1)
+    # cv2.putText(result, 'Prediction:%s %.5f'%(prediction, output_data[0][0]), (30,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,0,255), thickness = 1)
 
     cv2.imshow('demo', result)
 
