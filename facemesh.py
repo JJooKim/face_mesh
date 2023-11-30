@@ -206,7 +206,7 @@ class FaceAligner:
 
         # get the center of eyes
         eye_center = (left_eye + right_eye) // 2
-        print(tuple(eye_center), eye_center.shape)
+        #print(tuple(eye_center), eye_center.shape)
         # get transformation matrix
         M = cv2.getRotationMatrix2D((int(eye_center[0]),int(eye_center[1])), angle, scale)
 

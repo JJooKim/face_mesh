@@ -153,7 +153,9 @@ while True:
         prediction='NOT SPEAKING'
     
 
-    
+    print(output_data)
+
+
     # 고정된 fps를 위한 delay 세팅
     end_time = time.time() # 끝 시간
     elapsed_time = end_time - start_time
@@ -164,7 +166,7 @@ while True:
 
     # 화면 Display 코드
     cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
-    cv2.putText(result, 'Prediction:%s %.5f'%(prediction, output_data[0][0]), (20,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,0,255), thickness = 1)
+    cv2.putText(result, 'Prediction:%s %.5f'%(prediction, output_data[0][0]), (30,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,0,255), thickness = 1)
 
     cv2.imshow('demo', result)
 
