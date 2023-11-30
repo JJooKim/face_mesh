@@ -33,7 +33,7 @@ else:
 
 
 
-predict_interpreter = tpu.make_interpreter(PRED_MODEL)
+predict_interpreter = tpu.make_interpreter(model_path=str(MODEL_PATH / PRED_MODEL))
 predict_interpreter.allocate_tensors()
 
 
