@@ -148,16 +148,16 @@ while True:
     image_show, lip_coords = detect_single(image)
 
     result = cv2.cvtColor(image_show, cv2.COLOR_RGB2BGR)
-    print(lip_coords)
+    #print(lip_coords)
     current_frame = lip_coords[0].reshape(1,120)
     new_pred_frame = np.abs(current_frame - recent_frame)
     pred_frames = np.vstack((pred_frames[1:], new_pred_frame))
     recent_frame = current_frame 
-    print("debug2")        
+    #print("debug2")        
     ### pytorch inference needed
     #common.set_input(predict_interpreter, pred_frames)
     predict_interpreter.invoke()
-    print("debug3")
+    #print("debug3")
     # classes = classify.get_classes(predict_interpreter, top_k=1)
     # print("clasees len", len(classes))
     # scores = []
@@ -175,7 +175,7 @@ while True:
     e = time.time()
     elapsed_time = e - s
     delay_time = max(0, 1 / target_fps - elapsed_time)
-    print(delay_time)
+    #print(delay_time)
     time.sleep(delay_time)
     e2 = time.time()
     fps = 1 / (e2 - s)
