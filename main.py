@@ -38,7 +38,7 @@ predict_interpreter.allocate_tensors()
 
 
 
-
+print("debug0")
 
 # turn on camera
 cap = cv2.VideoCapture(-1)
