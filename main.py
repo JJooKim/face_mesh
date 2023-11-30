@@ -172,9 +172,9 @@ while True:
     time.sleep(delay_time)
     e2 = time.time()
     fps = 1 / (e2 - s)
-    cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
+    # cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
 
-    cv2.putText(result, 'Prediction:%s, %.5f'%(prediction, max(c)), (0,0), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
+    cv2.putText(result, 'Prediction:%s, %.5f'%(prediction, max(c)), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
 
     cv2.imshow('demo', result)
 
