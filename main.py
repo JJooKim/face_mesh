@@ -67,6 +67,7 @@ pose_stabilizers = [Stabilizer(
 pred_frames = np.zeros((19, 120))
 recent_frame = np.zeros((1,120))
 
+
 # detect single frame
 def detect_single(image):
     # pad image
@@ -153,20 +154,20 @@ while True:
     recent_frame = current_frame 
     print("debug2")        
     ### pytorch inference needed
-    common.set_input(predict_interpreter, pred_frames)
+    #common.set_input(predict_interpreter, pred_frames)
     predict_interpreter.invoke()
     print("debug3")
     classes = classify.get_classes(predict_interpreter, top_k=1)
-    #print("clasees len", len(classes))
-    # scores = []
-    # for c in classes:
-    #     #print('%.5f' %c.score)
-    #     scores.append(c.score)
+    print("clasees len", len(classes))
+    scores = []
+    for c in classes:
+        #print('%.5f' %c.score)
+        scores.append(c.score)
     
-    # if c[0] > c[1]:
-    #     prediction = 'speaking'
-    # else:
-    #     prediction = 'notspeaking'
+    if c[0] > c[1]:
+        prediction = 'speaking'
+    else:
+        prediction = 'notspeaking'
     
     e = time.time()
     elapsed_time = e - s
@@ -175,9 +176,9 @@ while True:
     time.sleep(delay_time)
     e2 = time.time()
     fps = 1 / (e2 - s)
-    # cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
+    cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
 
-    # cv2.putText(result, 'Prediction:%s, %.5f'%(prediction, max(c)), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
+    cv2.putText(result, 'Prediction:%s, %.5f'%(prediction, max(c)), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
 
     cv2.imshow('demo', result)
 
