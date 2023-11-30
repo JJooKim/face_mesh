@@ -133,7 +133,7 @@ while True:
     image_show, lip_coords = detect_single(image)
 
     # 버그 수정: 얼굴이 인식 안되었을때 처리 코드
-    if lip_coords == None:
+    if lip_coords == []:
         continue
 
     result = cv2.cvtColor(image_show, cv2.COLOR_RGB2BGR)
