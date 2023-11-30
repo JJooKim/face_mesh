@@ -27,7 +27,7 @@ class BaseInferencer:
         print("pated7")
 
         # self.interpreter = tpu.make_interpreter(model_path, device="usb")
-        # self.interpreter.allocate_tensors()
+        self.interpreter.allocate_tensors()
         print("pathed2")
         self.input_idx = self.interpreter.get_input_details()[0]['index']
         print("pathed3")
