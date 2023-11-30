@@ -38,7 +38,8 @@ print("debug-1")
 predict_interpreter.allocate_tensors()
 
 
-
+input_details = predict_interpreter.get_input_details()
+output_details = predict_interpreter.get_output_details()
 
 print("debug0")
 
@@ -157,17 +158,19 @@ while True:
     #common.set_input(predict_interpreter, pred_frames)
     predict_interpreter.invoke()
     print("debug3")
-    classes = classify.get_classes(predict_interpreter, top_k=1)
-    print("clasees len", len(classes))
-    scores = []
-    for c in classes:
-        print('%.5f' %c.score)
-        scores.append(c.score)
+    # classes = classify.get_classes(predict_interpreter, top_k=1)
+    # print("clasees len", len(classes))
+    # scores = []
+    # for c in classes:
+    #     print('%.5f' %c.score)
+    #     scores.append(c.score)
     
-    if c[0] > c[1]:
-        prediction = 'speaking'
-    else:
-        prediction = 'notspeaking'
+    # if c[0] > c[1]:
+    #     prediction = 'speaking'
+    # else:
+    #     prediction = 'notspeaking'
+    output_data = predict_interpreter.get_tensor(output_details[0]['index'])
+    print(output_data)
     
     e = time.time()
     elapsed_time = e - s
@@ -178,7 +181,7 @@ while True:
     fps = 1 / (e2 - s)
     cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
 
-    cv2.putText(result, 'Prediction:%s, %.5f'%(prediction, max(c)), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
+    cv2.putText(result, 'Prediction:%s'%(prediction), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
 
     cv2.imshow('demo', result)
 
