@@ -134,7 +134,7 @@ rows_written = 0
 target_fps = 20  
 
 prediction = 0
-
+print("debug1")
 while True:
     s = time.time()
     ret, image = cap.read()
@@ -149,10 +149,11 @@ while True:
     new_pred_frame = np.abs(current_frame - recent_frame)
     pred_frames = np.vstack((pred_frames[1:], new_pred_frame))
     recent_frame = current_frame 
-                            
+    print("debug2")        
     ### pytorch inference needed
     common.set_input(predict_interpreter, pred_frames)
     predict_interpreter.invoke()
+    print("debug3")
     classes = classify.get_classes(predict_interpreter, top_k=1)
     #print("clasees len", len(classes))
     # scores = []
