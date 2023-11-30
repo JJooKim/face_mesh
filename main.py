@@ -156,7 +156,7 @@ while True:
     #print("debug2")        
     ### pytorch inference needed
     #common.set_input(predict_interpreter, pred_frames)
-    input_data = np.array(pred_frames, dtype=np.float32)
+    input_data = np.array(pred_frames, dtype=np.float64)
     predict_interpreter.set_tensor(input_details[0]['index'], input_data)
     predict_interpreter.invoke()
     #print("debug3")
