@@ -24,11 +24,11 @@ MODEL_PATH = pathlib.Path("./models/")
 if ENABLE_EDGETPU:
     DETECT_MODEL = "cocompile/face_detection_front_128_full_integer_quant_edgetpu.tflite"
     MESH_MODEL = "cocompile/face_landmark_192_full_integer_quant_edgetpu.tflite"
-    PRED_MODEL = "/speak_predict.tflite"
+    PRED_MODEL = "speak_predict.tflite"
 else:
     DETECT_MODEL = "face_detection_front.tflite"
     MESH_MODEL = "face_landmark.tflite"
-    PRED_MODEL = "/speak_predict.tflite"
+    PRED_MODEL = "speak_predict.tflite"
 
 
 
