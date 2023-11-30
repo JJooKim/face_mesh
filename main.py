@@ -10,7 +10,7 @@ import tensorflow as tf
 
 
 # 모델 경로 세팅
-ENABLE_EDGETPU = True
+ENABLE_EDGETPU = False
 
 MODEL_PATH = pathlib.Path("./models/")
 if ENABLE_EDGETPU:
