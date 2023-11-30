@@ -6,15 +6,39 @@ from draw_utils import *
 from facemesh import *
 from kalman import *
 import numpy as np
+
+
+from pycoral.utils import edgetpu as tpu
+from pycoral.utils import dataset
+from pycoral.adapters import common
+from pycoral.adapters import classify
+
+
+
+
+
+
 ENABLE_EDGETPU = True
 
 MODEL_PATH = pathlib.Path("./models/")
 if ENABLE_EDGETPU:
     DETECT_MODEL = "cocompile/face_detection_front_128_full_integer_quant_edgetpu.tflite"
     MESH_MODEL = "cocompile/face_landmark_192_full_integer_quant_edgetpu.tflite"
+    PRED_MODEL = "/speak_predict.tflite"
 else:
     DETECT_MODEL = "face_detection_front.tflite"
     MESH_MODEL = "face_landmark.tflite"
+    PRED_MODEL = "/speak_predict.tflite"
+
+
+
+
+predict_interpreter = tpu.make_interpreter(PRED_MODEL)
+predict_interpreter.allocate_tensors()
+
+
+
+
 
 # turn on camera
 cap = cv2.VideoCapture(-1)
@@ -36,6 +60,10 @@ pose_stabilizers = [Stabilizer(
     cov_process=0.2,
     cov_measure=2) for _ in range(6)]
 
+
+
+pred_frames = np.zeros((19, 120))
+recent_frame = np.zeros((1,120))
 
 # detect single frame
 def detect_single(image):
@@ -103,7 +131,7 @@ def detect_single(image):
 max_rows = 2000
 rows_written = 0
 # endless loop
-target_fps = 12  
+target_fps = 20  
 while True:
     s = time.time()
     ret, image = cap.read()
@@ -114,8 +142,18 @@ while True:
 
     result = cv2.cvtColor(image_show, cv2.COLOR_RGB2BGR)
 
-    start_time = time.time()
+    current_frame = np.reshape(lip_coords[0], 1,120)
+    new_pred_frame = np.abs(current_frame - recent_frame)
+    pred_frames = np.vstack((pred_frames[1:], new_pred_frame))
+    recent_frame = current_frame 
+                            
+    ### pytorch inference needed
+    common.set_input(predict_interpreter, pred_frames)
+    predict_interpreter.invoke()
+    classes = classify.get_classes(predict_interpreter, top_k=1)
 
+    for c in classes:
+        print('%.5f' %c.score)
 
     e = time.time()
     elapsed_time = e - s
