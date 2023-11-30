@@ -6,18 +6,10 @@ from draw_utils import *
 from facemesh import *
 from kalman import *
 import numpy as np
-
-
-from pycoral.utils import edgetpu as tpu
-from pycoral.utils import dataset
-from pycoral.adapters import common
-from pycoral.adapters import classify
-
-
-
 import tensorflow as tf
 
 
+# 모델 경로 세팅
 ENABLE_EDGETPU = True
 
 MODEL_PATH = pathlib.Path("./models/")
@@ -31,30 +23,25 @@ else:
     PRED_MODEL = "speak_predict2.tflite"
 
 
-
-print("debug-2")
-predict_interpreter = tf.lite.Interpreter(str(MODEL_PATH / PRED_MODEL))
-print("debug-1")
-predict_interpreter.allocate_tensors()
-
-
-input_details = predict_interpreter.get_input_details()
-output_details = predict_interpreter.get_output_details()
-input_shape = input_details[0]['shape']
-print("debug0")
-
-# turn on camera
+# 카메라 초기 세팅
 cap = cv2.VideoCapture(-1)
 cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
 ret, init_image = cap.read()
 if not ret:
     sys.exit(-1)
 
-# instantiate face models
+# Face Models 초기화
 face_detector = FaceDetector(model_path=str(MODEL_PATH / DETECT_MODEL), edgetpu=ENABLE_EDGETPU)
 face_mesher = FaceMesher(model_path=str((MODEL_PATH / MESH_MODEL)), edgetpu=ENABLE_EDGETPU)
 face_aligner = FaceAligner(desiredLeftEye=(0.38, 0.38))
 face_pose_decoder = FacePoseDecoder(init_image.shape)
+
+# Prediction Model 초기화
+predict_interpreter = tf.lite.Interpreter(str(MODEL_PATH / PRED_MODEL))
+predict_interpreter.allocate_tensors()
+input_details = predict_interpreter.get_input_details()
+output_details = predict_interpreter.get_output_details()
+input_shape = input_details[0]['shape']
 
 # Introduce scalar stabilizers for pose.
 pose_stabilizers = [Stabilizer(
@@ -65,8 +52,6 @@ pose_stabilizers = [Stabilizer(
 
 
 
-pred_frames = np.zeros((19, 120))
-recent_frame = np.zeros((1,120))
 
 
 # detect single frame
@@ -117,78 +102,76 @@ def detect_single(image):
     image_show = draw_face(padded, bboxes_decoded, landmarks, scores, confidence=True)
     lip_coords = []
     for i, mesh_landmark_inverse in enumerate(mesh_landmarks_inverse):
-        # print(mesh_landmark_inverse.shape)
-        # print(i)
- 
         lip_coords.append(np.array(mesh_landmark_inverse[[0, 13, 14, 17, 37, 39, 40, 61, 78, 80, 81, 82, 84, 87, 88, 91, 95, 146, 178, 181, 185, 191, 267, 269, 270, 291, 308, 310, 311, 312, 314, 317, 318, 321, 324, 375, 402, 405, 409, 415], :]))
         
-        # check if its a numpy array
+       
 
         image_show = draw_mesh(image_show, mesh_landmark_inverse, contour=True)
-    # for i, (r_vec, t_vec) in enumerate(zip(r_vecs, t_vecs)):
-    #     image_show = draw_pose(image_show, r_vec, t_vec, face_pose_decoder.camera_matrix, face_pose_decoder.dist_coeffs)
 
-    # remove pad
     image_show = image_show[padded_size[0]:target_dim - padded_size[1], padded_size[2]:target_dim - padded_size[3]]
     return image_show, lip_coords
 
-max_rows = 2000
-rows_written = 0
-# endless loop
-target_fps = 20  
 
-prediction = 0
-print("debug1")
+
+
+##############################################################################################################
+# max_rows = 2000
+# rows_written = 0
+pred_frames = np.zeros((19, 120))
+recent_frame = np.zeros((1,120))
+target_fps = 20  
+prediction = ""
+
+
 while True:
-    s = time.time()
+    start_time = time.time() # 시작 시간
+
     ret, image = cap.read()
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    # detect single
+    # Frame detection
     image_show, lip_coords = detect_single(image)
 
+    # 버그 수정: 얼굴이 인식 안되었을때 처리 코드
+    if lip_coords == None:
+        continue
+
     result = cv2.cvtColor(image_show, cv2.COLOR_RGB2BGR)
-    #print(lip_coords)
+
+    # 최근 20개 Frame을 활용한 현재 Frame의 발화 여부 예측
     current_frame = lip_coords[0].reshape(1,120)
     new_pred_frame = np.abs(current_frame - recent_frame)
     pred_frames = np.vstack((pred_frames[1:], new_pred_frame))
     recent_frame = current_frame 
-    #print("debug2")        
-    ### pytorch inference needed
-    #common.set_input(predict_interpreter, pred_frames)
     input_data = np.array(pred_frames, dtype=np.float64)
     predict_interpreter.set_tensor(input_details[0]['index'], np.expand_dims(input_data, axis=0))
     predict_interpreter.invoke()
-    #print("debug3")
-    # classes = classify.get_classes(predict_interpreter, top_k=1)
-    # print("clasees len", len(classes))
-    # scores = []
-    # for c in classes:
-    #     print('%.5f' %c.score)
-    #     scores.append(c.score)
-    
-    # if c[0] > c[1]:
-    #     prediction = 'speaking'
-    # else:
-    #     prediction = 'notspeaking'
     output_data = predict_interpreter.get_tensor(output_details[0]['index'])
-    print(output_data)
+    if output_data[0][0] > 0.5:
+        prediction = 'SPEAKING'
+    else:
+        prediction='NOT SPEAKING'
     
-    e = time.time()
-    elapsed_time = e - s
-    delay_time = max(0, 1 / target_fps - elapsed_time)
-    #print(delay_time)
-    time.sleep(delay_time)
-    e2 = time.time()
-    fps = 1 / (e2 - s)
-    cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
 
-    cv2.putText(result, 'Prediction:%s'%(prediction), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
+    
+    # 고정된 fps를 위한 delay 세팅
+    end_time = time.time() # 끝 시간
+    elapsed_time = end_time - start_time
+    delay_time = max(0, 1 / target_fps - elapsed_time) # 고정된 fps를 위한 delay시간
+    time.sleep(delay_time)
+    end_time2 = time.time()
+    fps = 1 / (end_time2 - start_time) # 해당 루프에서의 fps
+
+    # 화면 Display 코드
+    cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
+    cv2.putText(result, 'Prediction:%s %.5f'%(prediction, output_data[0][0]), (20,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,0,255), thickness = 1)
 
     cv2.imshow('demo', result)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+    ### Reference: 데이터 수집을 위해 활용했었던 코드
 
     # if rows_written < max_rows:
     #     with open('output3.csv', 'a', newline='') as csvfile:
