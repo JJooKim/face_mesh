@@ -10,7 +10,7 @@ import tensorflow as tf
 
 
 # 모델 경로 세팅
-ENABLE_EDGETPU = True
+ENABLE_EDGETPU = False
 
 MODEL_PATH = pathlib.Path("./models/")
 if ENABLE_EDGETPU:
@@ -117,7 +117,7 @@ def detect_single(image):
 # rows_written = 0
 pred_frames = np.zeros((19, 120))
 recent_frame = np.zeros((1,120))
-target_fps = 20  
+target_fps = 15
 prediction = ""
 
 
@@ -163,7 +163,7 @@ while True:
     fps = 1 / (end_time2 - start_time) # 해당 루프에서의 fps
 
     # 화면 Display 코드
-    cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
+    #cv2.putText(result, 'FPS:%5.2f'%(fps), (10,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,255,0), thickness = 1)
     cv2.putText(result, 'Prediction:%s %.5f'%(prediction, output_data[0][0]), (30,50), cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1,  color = (0,0,255), thickness = 1)
 
     cv2.imshow('demo', result)
