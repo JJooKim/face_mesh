@@ -138,7 +138,7 @@ while True:
 
     result = cv2.cvtColor(image_show, cv2.COLOR_RGB2BGR)
 
-    최근 20개 Frame을 활용한 현재 Frame의 발화 여부 예측
+    #최근 20개 Frame을 활용한 현재 Frame의 발화 여부 예측
     current_frame = lip_coords[0].reshape(1,120)
     new_pred_frame = np.abs(current_frame - recent_frame)
     pred_frames = np.vstack((pred_frames[1:], new_pred_frame))
