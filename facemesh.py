@@ -7,27 +7,27 @@ import tflite_runtime.interpreter as tflite
 from pycoral.utils import edgetpu as tpu
 from postprocessing import nms_oneclass
 
-# # EdgeTPU shared lib name
-# EDGETPU_SHARED_LIB = {
-#     'Linux': './libedgetpu.so.1',
-#     'Darwin': './libedgetpu.1.dylib',
-#     'Windows': './edgetpu.dll'
-# }[platform.system()]
+# EdgeTPU shared lib name
+EDGETPU_SHARED_LIB = {
+    'Linux': './libedgetpu.so.1',
+    'Darwin': './libedgetpu.1.dylib',
+    'Windows': './edgetpu.dll'
+}[platform.system()]
 
 
 class BaseInferencer:
 
     def __init__(self, model_path, edgetpu=True):
-        #experimental_delegates = [tf.lite.experimental.load_delegate('libedgetpu.so.1')] if edgetpu else None
+        experimental_delegates = [tf.lite.experimental.load_delegate('libedgetpu.so.1')] if edgetpu else None
         print("pathed")
-        # self.interpreter = tflite.Interpreter(
-        #     model_path=model_path,
-        #     experimental_delegates=
-        #     experimental_delegates)
+        self.interpreter = tflite.Interpreter(
+            model_path=model_path,
+            experimental_delegates=
+            experimental_delegates)
         print("pated7")
 
-        self.interpreter = tpu.make_interpreter(model_path, device="usb")
-        self.interpreter.allocate_tensors()
+        # self.interpreter = tpu.make_interpreter(model_path, device="usb")
+        # self.interpreter.allocate_tensors()
         print("pathed2")
         self.input_idx = self.interpreter.get_input_details()[0]['index']
         print("pathed3")
