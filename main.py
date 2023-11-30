@@ -154,7 +154,7 @@ while True:
     common.set_input(predict_interpreter, pred_frames)
     predict_interpreter.invoke()
     classes = classify.get_classes(predict_interpreter, top_k=1)
-    print("clasees len", len(classes))
+    #print("clasees len", len(classes))
     scores = []
     for c in classes:
         #print('%.5f' %c.score)
