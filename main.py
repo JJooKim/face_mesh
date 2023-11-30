@@ -32,8 +32,9 @@ else:
 
 
 
-
+print("debug-2")
 predict_interpreter = tpu.make_interpreter(str(MODEL_PATH / PRED_MODEL))
+print("debug-1")
 predict_interpreter.allocate_tensors()
 
 
