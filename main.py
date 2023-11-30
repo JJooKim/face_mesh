@@ -145,7 +145,7 @@ while True:
     image_show, lip_coords = detect_single(image)
 
     result = cv2.cvtColor(image_show, cv2.COLOR_RGB2BGR)
-
+    print(lip_coords)
     current_frame = lip_coords[0].reshape(1,120)
     new_pred_frame = np.abs(current_frame - recent_frame)
     pred_frames = np.vstack((pred_frames[1:], new_pred_frame))
