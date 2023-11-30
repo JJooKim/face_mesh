@@ -157,7 +157,7 @@ while True:
     ### pytorch inference needed
     #common.set_input(predict_interpreter, pred_frames)
     input_data = np.array(pred_frames, dtype=np.float64)
-    predict_interpreter.set_tensor(input_details[0]['index'], input_data)
+    predict_interpreter.set_tensor(input_details[0]['index'], input_data[:, np.newaxis])
     predict_interpreter.invoke()
     #print("debug3")
     # classes = classify.get_classes(predict_interpreter, top_k=1)
